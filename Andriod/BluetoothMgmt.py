@@ -31,6 +31,7 @@ class BluetoothMgmt(multiprocessing.Process):
                 if len(data)>0:
                      packet = data
                      print(data.decode('utf-8'))
+                     print(self.header.decode('utf-8'))
                      self.job_q.put(self.header+":"+packet)   
             except BluetoothError as e:
                 print("[ERR][ANDROID]:","Disconnection")#can consider logging...

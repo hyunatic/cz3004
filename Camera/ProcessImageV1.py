@@ -1,5 +1,5 @@
 import cv2
-import helle2 as he
+from .helle2 import *
 import numpy as np
 import imutils
 class ProcessImageV1:

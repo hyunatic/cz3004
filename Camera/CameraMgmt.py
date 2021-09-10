@@ -70,7 +70,7 @@ class CameraMgmt(multiprocessing.Process):
         t3.join()
      
     def startProcessor1(self,image_q):
-        self.p = ProcessImage()
+        self.p = ProcessImage.ProcessImage()
         while True:
             if(image_q.qsize()!=0):
                 
@@ -87,7 +87,7 @@ class CameraMgmt(multiprocessing.Process):
             
             time.sleep(0.0001)
     def startProcessor2(self,image_q):
-        self.p2 = ProcessImageV1()
+        self.p2 = ProcessImageV1.ProcessImageV1()
         while True:
             if(image_q.qsize()!=0):
                 

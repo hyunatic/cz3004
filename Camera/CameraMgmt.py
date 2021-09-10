@@ -3,8 +3,8 @@ import time
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 import threading
-#from ProcessImage import ProcessImage
-#from ProcessImageV1 import ProcessImageV1
+from . import ProcessImage
+from . import ProcessImageV1
 import multiprocessing
 import struct
 import queue as Queue

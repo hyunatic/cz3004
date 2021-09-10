@@ -88,7 +88,7 @@ class SocketServer(multiprocessing.Process):
         while True: 
             try:
                 data = c.recv(1024)
-                data = data.strip()#.decode('utf-8')
+                data = data.strip().decode('utf-8')
                 
                 if not data: 
                     print('Bye')

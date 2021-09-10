@@ -2,7 +2,7 @@ import multiprocessing
 import logging
 from Networking import SocketServer
 from Andriod import BluetoothMgmt
-from Networking import *
+from Networking import PacketHandler
 from Camera import CameraMgmt
 from RemoteControlCar import RCMgmt
 import time
@@ -17,31 +17,31 @@ process_Queue = multiprocessing.Manager().Queue()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',filename="DebugLog.txt",level=logging.DEBUG)
 
 # #Server Details
-ip_Address = '192.168.6.6'
+ip_Address = '127.0.0.1'
 port_Number = 5000
 server = SocketServer.SocketServer(ip_Address,port_Number,process_Queue,"P")
 
 #Create BlueToothManager Thread for Andriod Tablet Connection
-bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(6,process_Queue,"B")
+bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"B")
 
 #Create RCMgmt Thread for Remote Control Car Connection Via Serial Port
-rcCar = RCMgmt.RCMgmt('directoryname',115200,0,process_Queue,"A")
+#rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"A")
 
 #Create Camera Thread for PI Camera Connection
-piCamera = CameraMgmt(process_Queue,"R");
+piCamera = CameraMgmt.CameraMgmt(process_Queue,"R");
 
 #Create Packet Handler to identify different services in queue
-packetHandler = PacketHandler()
+packetHandler = PacketHandler.PacketHandler()
 packetHandler.registerHandler(server)
 packetHandler.registerHandler(bluetoothMgmt)
-packetHandler.registerHandler(rcCar)
+#packetHandler.registerHandler(rcCar)
 packetHandler.registerHandler(piCamera)
 
 
 #Adding Services into Process Queue
 processes.append(server)
 processes.append(bluetoothMgmt)
-processes.append(rcCar)
+#processes.append(rcCar)
 processes.append(piCamera)
 
 

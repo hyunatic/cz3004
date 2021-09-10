@@ -9,7 +9,7 @@ import queue as Queue
 
 class BluetoothMgmt(multiprocessing.Process):
     handle_q = multiprocessing.Manager().Queue()
-    whitelist = ['Insert MAC Address of Device Connecting Via Bluetooth']
+    whitelist = ['50:50:A4:33:9C:09']
     
   
     def __init__(self,port,job_q,header):

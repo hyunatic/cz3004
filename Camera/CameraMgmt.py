@@ -52,7 +52,7 @@ class CameraMgmt(multiprocessing.Process):
         
         self.camera.exposure_mode = 'antishake'
         self.camera.image_effect = 'denoise'
-        self.camera.metering = 'spot'
+        #self.camera.metering = 'spot'
         self.camera.framerate=30
         t1 = threading.Thread(target=self.startProcessor1, args=(self.process1_q,))
         t1.start()    

@@ -38,6 +38,7 @@ class PacketHandler:
     def handle(self,packet):
         splitData = packet.split(':')
         if len(splitData)>1:
+            print(splitData)
             recv_from = splitData[0]
             
             unique_id = splitData[1]

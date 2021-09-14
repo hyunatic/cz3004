@@ -137,7 +137,7 @@ class RCMgmt(multiprocessing.Process):
                 if len(data) == 0:
                     continue
                 
-                print('raw data:', data)
+                print('raw data from RC Car:', data.decode('utf-8'))
                 if not data.endswith("$"):
                     in_buffer += data
                     continue

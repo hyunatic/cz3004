@@ -38,15 +38,11 @@ class PacketHandler:
     def handle(self,packet):
         splitData = packet.split(':')
         if len(splitData)>1:
-            print(splitData)
+            print(self.handlers)
             recv_from = splitData[0]
             
             unique_id = splitData[1]
-
-            if recv_from == 'B':
-                print("Send to RC Car")
-                
-          
+                       
             if unique_id in self.handlers:
                 if not packet.startswith("P:A:set:startposition"):
                     lo = ("["+self.measure_temp().strip()+"][MSG]["+self.convertToName(recv_from)+"->"+self.convertToName(unique_id)+"]:",packet[2:])

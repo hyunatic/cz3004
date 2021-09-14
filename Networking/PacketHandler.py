@@ -40,16 +40,15 @@ class PacketHandler:
         if len(splitData)>1:
             print(self.handlers)
             recv_from = splitData[0]
-            
             unique_id = splitData[1]
+            data = splitData[2]
                        
             if unique_id in self.handlers:
                 print(unique_id)
-                print(packet[2:])
-                print(packet[2])
+                print(data)
                 if not packet.startswith("P:A:set:startposition"):
-                    lo = ("["+self.measure_temp().strip()+"][MSG]["+self.convertToName(recv_from)+"->"+self.convertToName(unique_id)+"]:",packet[2:])
-                self.handlers[unique_id].handle(packet[2:]+"\n")
+                    lo = ("["+self.measure_temp().strip()+"][MSG]["+self.convertToName(recv_from)+"->"+self.convertToName(unique_id)+"]:",data)
+                self.handlers[unique_id].handle(data+"\n")
         else:
             print("[ERR][PACKETHANDLER]:",packet)
             self.logger.debug("UnknownPacketDestination "+packet)

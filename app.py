@@ -25,7 +25,7 @@ server = SocketServer.SocketServer(ip_Address,port_Number,process_Queue,"P")
 bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"B")
 
 #Create RCMgmt Thread for Remote Control Car Connection Via Serial Port
-#rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"A")
+rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"A")
 
 #Create Camera Thread for PI Camera Connection
 piCamera = CameraMgmt.CameraMgmt(process_Queue,"R");
@@ -34,7 +34,7 @@ piCamera = CameraMgmt.CameraMgmt(process_Queue,"R");
 packetHandler = PacketHandler.PacketHandler()
 packetHandler.registerHandler(server)
 packetHandler.registerHandler(bluetoothMgmt)
-#packetHandler.registerHandler(rcCar)
+packetHandler.registerHandler(rcCar)
 packetHandler.registerHandler(piCamera)
 
 

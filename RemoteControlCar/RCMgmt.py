@@ -72,45 +72,7 @@ class RCMgmt(multiprocessing.Process):
 #                print("RC-Car is handling : "+packet+"   \n")
                 splitData = packet.split(':')
                 command = splitData[1];
-                if command == "cmd":
-
-                    direction = splitData[2].strip()
-                    self.move_count = self.move_count+1
-                    
-                    if direction == "forward":
-                        if self.orientation == "right":
-                            self.x1 = self.x1+1 
-                        if self.orientation == "left":
-                            self.x1 = self.x1-1
-                        if self.orientation == "up":
-                            self.y1 = self.y1-1
-                        if self.orientation == "down":
-                            self.y1 = self.y1+1
-                    if direction == "bottom":
-                        if self.orientation == "right":
-                            self.x1 = self.x1-1
-                        if self.orientation == "left":
-                            self.x1 = self.x1+1
-                        if self.orientation == "up":
-                            self.y1=self.y1+1
-                        if self.orientation == "down":
-                            self.y1 = self.y1-1
-                    if direction == "right":
-                        self.orientation = {"right": "down", "left": "up", "up": "right", "down": "left"}[self.orientation]
-                    if direction == "left":
-                        self.orientation = {"right": "up", "left": "down", "up": "left", "down": "right"}[self.orientation]
-                
-                if command == "set":
-                    if splitData[2] == "startposition":
-                        self.count = 0
-                        cor = json.loads(splitData[3])
-                        self.orientation = splitData[4] 
-                        self.x1 = int(cor[0])
-                        self.y1 = int(cor[1])
-                        self.sensorNoNoise = []
-                else:
-                    
-                    self.write(packet)
+                self.write(packet)
 
             time.sleep(0.000001)
 
@@ -122,7 +84,7 @@ class RCMgmt(multiprocessing.Process):
     def write(self,message):
         if self.serial_port.isOpen():
             message = message.strip()
-            self.serial_port.write(str(message+"\n")) 
+            self.serial_port.write(message.encode('utf-8')) 
             print("[SEND][RC-Car]:",message)
         else:
             print("[ERR][RC-Car]:","Serial port not open")

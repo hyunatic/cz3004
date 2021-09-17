@@ -106,34 +106,9 @@ class RCMgmt(multiprocessing.Process):
 
                 in_buffer += data[:-1]
                 
-                splitData = in_buffer.split(':')
-                if len(splitData)>2:
-                    if splitData[1] == "map":
-                        job_q.put(self.header+":R:CAM:CAM")
-                    if splitData[1] == "cmd" and splitData[2] == "ack":
-                        job_q.put(self.header+":"+in_buffer)
-                    if splitData[1] == "dist":
-                        sensorData = [0 if x<0 else (x-5) for x in json.loads(splitData[2])]
-
-                        cells = [int(round(x/10)) for x in sensorData]
-                        cells = [0 if x>threshold else x+1 for x,threshold in zip(cells, self.thresholds)]
-                        self.sensorNoNoise.append(Counter(cells).most_common(1)[0][0])  
-                        
-                        self.count = self.count+1
-                        if self.count == 6:
-                            self.count = 0
-                            toSend = "map:sensor:[{},{}]:{}:{}".format(self.x1,self.y1,self.orientation.strip().strip(),self.sensorNoNoise)
-                           # job_q.put(self.header+":B:"+toSend)
-                            job_q.put(self.header+":P:"+toSend)
-                            job_q.put(self.header+":R:CAM:CAM")
-                            self.calibrateCell = self.sensorNoNoise
-                            self.sensorNoNoise = []
-                    else:
-                     print("[RECV][RC-Car]:",in_buffer)
-                     job_q.put(self.header+":"+in_buffer)
-                else:
-                    print('[RECV][RC-Car]:',in_buffer)
-                    job_q.put(self.header+":"+in_buffer)
+                splitData = in_buffer
+                print('[RECV][RC-Car]:',in_buffer)
+                job_q.put(self.header+":B:"+in_buffer)
                 in_buffer = ""
 
             except serial.SerialException as e:

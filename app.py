@@ -41,7 +41,7 @@ packetHandler.registerHandler(piCamera)
 #Adding Services into Process Queue
 processes.append(server)
 processes.append(bluetoothMgmt)
-#processes.append(rcCar)
+processes.append(rcCar)
 processes.append(piCamera)
 
 

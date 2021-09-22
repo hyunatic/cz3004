@@ -187,3 +187,4 @@ class CameraMgmt(multiprocessing.Process):
 
     def handle(self,packet):
         self.handle_q.put(packet)
+        #self.handle_q.put(self.header + ":B:" + packet)

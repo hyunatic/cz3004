@@ -98,7 +98,6 @@ class RCMgmt(multiprocessing.Process):
 
                 if len(data) == 0:
                     continue
-                
                 print('raw data from RC Car:', data.decode('utf-8'))
                 data = data.decode('utf-8')
                 job_q.put(self.header+":B:"+data)

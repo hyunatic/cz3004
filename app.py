@@ -1,7 +1,7 @@
 import multiprocessing
 import logging
 from Networking import SocketServer
-from Andriod import BluetoothMgmt
+from Android import BluetoothMgmt
 from Networking import PacketHandler
 from Camera import CameraMgmt
 from RemoteControlCar import RCMgmt

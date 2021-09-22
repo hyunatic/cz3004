@@ -1,0 +1,6 @@
+2021-09-17 21:29:09,935 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer
+2021-09-17 21:30:45,066 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer
+2021-09-17 21:37:42,504 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer
+2021-09-17 21:38:37,476 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer
+2021-09-17 21:40:07,798 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer
+2021-09-17 21:41:14,053 - BluetoothMgmt - DEBUG - [Errno 104] Connection reset by peer

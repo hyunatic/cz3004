@@ -9,7 +9,7 @@ import queue as Queue
 
 class BluetoothMgmt(multiprocessing.Process):
     handle_q = multiprocessing.Manager().Queue()
-    whitelist = ['50:50:A4:33:9C:09']
+    whitelist = ['50:50:A4:33:9C:09', '10:E4:C2:51:37:F0', '3C:F7:A4:BC:DA:06']
     
   
     def __init__(self,port,job_q,header):

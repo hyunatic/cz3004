@@ -30,13 +30,13 @@ class SocketServer(multiprocessing.Process):
         s.bind((self.host, self.port))
         s.listen(5)
         while True: 
-            print("[LOG][PC]","Listening for connection")
+            print("[LOG][ALGOPC]","Listening for connection")
             # Create connection with client 
             self.c, addr = s.accept() 
             
             # Lock acquired by client 
             self.print_lock.acquire() 
-            print("[LOG][PC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
+            print("[LOG][ALGOPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
             self.job_q.put(self.header+":ALG:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
@@ -67,10 +67,10 @@ class SocketServer(multiprocessing.Process):
     def send_socket(self,message):
         try:
                 if(self.c == None):
-                    print("[ERR][PC]","Trying to send but no clients connected")
+                    print("[ERR][ALGOPC]","Trying to send but no clients connected")
                     self.job_q.put(self.header+":ALG:PC not connected")
                 else:
-                    self.c.sendall(message.encode('utf-16'))
+                    self.c.sendall(message.encode('utf-8'))
         except socket.error as e:
                 print(socket.error)
                 self.logger.debug(e)

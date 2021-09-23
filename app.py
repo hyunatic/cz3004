@@ -3,7 +3,7 @@ import logging
 from Networking import SocketServer
 from Android import BluetoothMgmt
 from Networking import PacketHandler
-from Networking import CameraServer
+from Camera import CameraServer
 from RemoteControlCar import RCMgmt
 import time
 import queue as Queue

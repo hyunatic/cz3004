@@ -43,19 +43,19 @@ class CameraServer(multiprocessing.Process):
         s.listen(5)
 
         while True: 
-            print("[LOG][PC]","Listening for connection")
+            print("[LOG][CPC]","Listening for connection")
             # Create connection with client 
             self.c, addr = s.accept() 
             
             # Lock acquired by client 
             self.print_lock.acquire() 
-            print("[LOG][PC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
+            print("[LOG][CPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
             self.job_q.put(self.header+":CPC:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             
             #Camera function threading 
-            t3 = threading.Thread(target=self.CameraScanning,args=(self.c,self.job_q,))
+            t3 = threading.Thread(target=self.CameraScanning,args=(self.c,self.job_q,s))
 
             t1.start()
             t3.start()
@@ -69,22 +69,23 @@ class CameraServer(multiprocessing.Process):
     def getPacketHeader(self):
         return self.header
         
-    def CameraScanning(self):
-        for foo in camera.capture_continuous(stream, 'jpeg'):
-            connection.write(struct.pack('<L', stream.tell()))
-            connection.flush()
-            stream.seek(0)
-            connection.write(stream.read())
+    def CameraScanning(self, job_q,s):
+        count = 0
+        for foo in self.camera.capture_continuous(stream, 'jpeg'):
+            s.write(struct.pack('<L', stream.tell()))
+            s.flush()
+            self.stream.seek(0)
+            s.write(stream.read())
             if count == 0:
                 count+=1
             else:
-                print(client_socket.recv(1024).decode())
+                print(s.recv(1024).decode())
             if input("Press Enter to Send...") == '':
                 stream.seek(0)
                 stream.truncate()
             else:
                 break
-            connection.write(struct.pack('<L', 0))
+            s.write(struct.pack('<L', 0))
 
     def handleProcessor(self,delay):
         while True:

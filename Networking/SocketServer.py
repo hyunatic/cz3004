@@ -57,14 +57,11 @@ class SocketServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
+                self.send(self.c,packet)
                 splitData = packet.split(':')
-                if splitData[1] == "set":
-                    if splitData[2] == "startposition":
-                        self.job_q.put(self.header+":A:set:startposition:"+splitData[3]+":"+splitData[4])
-                        
+                print(packet)
                 self.send_socket(str(packet+"\n"))
             
-
             time.sleep(delay)
 
     def handle(self,packet):

@@ -57,10 +57,7 @@ class SocketServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
-                self.send(self.c,packet)
-                splitData = packet.split(':')
-                print(packet)
-                self.send_socket(str(packet+"\n"))
+                self.send_socket(packet)
             
             time.sleep(delay)
 
@@ -69,11 +66,11 @@ class SocketServer(multiprocessing.Process):
 
     def send_socket(self,message):
         try:
-                
                 if(self.c == None):
                     print("[ERR][PC]","Trying to send but no clients connected")
-                    self.job_q.put(self.header+":B:PC not connected")
+                    self.job_q.put(self.header+":ALG:PC not connected")
                 else:
+                    print(message)
                     self.c.sendall(message)
         except socket.error as e:
                 print(socket.error)

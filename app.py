@@ -3,7 +3,7 @@ import logging
 from Networking import SocketServer
 from Android import BluetoothMgmt
 from Networking import PacketHandler
-from Camera import CameraMgmt
+from Camera import CameraServer
 from RemoteControlCar import RCMgmt
 import time
 import queue as Queue
@@ -28,7 +28,7 @@ bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"AND")
 rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"STM")
 
 #Create Camera Thread for PI Camera Connection
-piCamera = CameraMgmt.CameraMgmt(process_Queue,"IMG");
+piCamera = CameraServer.CameraServer(ip_Address, 5001 ,process_Queue,"IMG");
 
 #Create Packet Handler to identify different services in queue
 packetHandler = PacketHandler.PacketHandler()

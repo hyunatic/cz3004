@@ -37,7 +37,7 @@ class SocketServer(multiprocessing.Process):
             # Lock acquired by client 
             self.print_lock.acquire() 
             print("[LOG][PC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-            self.job_q.put(self.header+":B:PC Connected") 
+            self.job_q.put(self.header+":ALG:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             

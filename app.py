@@ -17,7 +17,7 @@ process_Queue = multiprocessing.Manager().Queue()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',filename="DebugLog.txt",level=logging.DEBUG)
 
 # #Server Details
-ip_Address = '127.0.0.1'
+ip_Address = '192.168.4.4'
 port_Number = 5000
 server = SocketServer.SocketServer(ip_Address,port_Number,process_Queue,"ALG")
 

@@ -69,8 +69,14 @@ class CameraServer(multiprocessing.Process):
     def getPacketHeader(self):
         return self.header
         
+<<<<<<< HEAD
     def CameraScanning(self, job_q, s):
         for foo in camera.capture_continuous(stream, 'jpeg'):
+=======
+    def CameraScanning(self, job_q,s):
+        count = 0
+        for foo in self.camera.capture_continuous(stream, 'jpeg'):
+>>>>>>> 20db42f64bbb408db4dc903b5eaad91429053298
             s.write(struct.pack('<L', stream.tell()))
             s.flush()
             self.stream.seek(0)
@@ -78,10 +84,17 @@ class CameraServer(multiprocessing.Process):
             if count == 0:
                 count+=1
             else:
+<<<<<<< HEAD
                 print(client_socket.recv(1024).decode())
             if input("Press Enter to Send...") == '':
                 self.stream.seek(0)
                 self.stream.truncate()
+=======
+                print(s.recv(1024).decode())
+            if input("Press Enter to Send...") == '':
+                stream.seek(0)
+                stream.truncate()
+>>>>>>> 20db42f64bbb408db4dc903b5eaad91429053298
             else:
                 break
             s.write(struct.pack('<L', 0))
@@ -101,7 +114,11 @@ class CameraServer(multiprocessing.Process):
     def send_socket(self,message):
         try:
                 if(self.c == None):
+<<<<<<< HEAD
                     print("[ERR][CPC]","Trying to send but no clients connected")
+=======
+                    print("[ERR][PC]","Trying to send but no clients connected")
+>>>>>>> 20db42f64bbb408db4dc903b5eaad91429053298
                     self.job_q.put(self.header+":ALG:PC not connected")
                 else:
                     self.c.sendall(message.encode('utf-16'))

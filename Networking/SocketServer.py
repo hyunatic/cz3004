@@ -70,7 +70,11 @@ class SocketServer(multiprocessing.Process):
                     print("[ERR][ALGOPC]","Trying to send but no clients connected")
                     self.job_q.put(self.header+":ALG:PC not connected")
                 else:
+<<<<<<< HEAD
                     self.c.sendall(message.encode('utf-16'))
+=======
+                    self.c.sendall(message.encode('utf-8'))
+>>>>>>> 20db42f64bbb408db4dc903b5eaad91429053298
         except socket.error as e:
                 print(socket.error)
                 self.logger.debug(e)

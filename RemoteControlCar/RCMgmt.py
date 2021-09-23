@@ -100,7 +100,7 @@ class RCMgmt(multiprocessing.Process):
                     continue
                 print('raw data from RC Car:', data.decode('utf-8'))
                 data = data.decode('utf-8')
-                job_q.put(self.header+":B:"+data)
+                job_q.put(self.header+":AND:"+data)
 
             except serial.SerialException as e:
                 print >> stderr,(self.__class__.__name__,e)

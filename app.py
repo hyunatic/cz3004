@@ -19,16 +19,16 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 # #Server Details
 ip_Address = '127.0.0.1'
 port_Number = 5000
-server = SocketServer.SocketServer(ip_Address,port_Number,process_Queue,"P")
+server = SocketServer.SocketServer(ip_Address,port_Number,process_Queue,"ALG")
 
 #Create BlueToothManager Thread for Andriod Tablet Connection
-bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"B")
+bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"AND")
 
 #Create RCMgmt Thread for Remote Control Car Connection Via Serial Port
-rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"A")
+rcCar = RCMgmt.RCMgmt('/dev/ttyUSB0',115200,0,process_Queue,"STM")
 
 #Create Camera Thread for PI Camera Connection
-piCamera = CameraMgmt.CameraMgmt(process_Queue,"R");
+piCamera = CameraMgmt.CameraMgmt(process_Queue,"IMG");
 
 #Create Packet Handler to identify different services in queue
 packetHandler = PacketHandler.PacketHandler()

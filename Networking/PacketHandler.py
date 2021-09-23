@@ -26,14 +26,14 @@ class PacketHandler:
             print("Fail to remove, handler not found.")
 
     def convertToName(self,header):
-        if header == 'A':
+        if header == 'STM':
                 return "RC-Car"
-        elif header == 'B':
+        elif header == 'AND':
                 return "ANDROID"
-        elif header == 'P':
-                return "PC"
-        elif header == 'R':
-                return "RPI"
+        elif header == 'ALG':
+                return "ALGORITHM PC"
+        elif header == 'IMG':
+                return "PI-CAMERA"
             
     def handle(self,packet):
         splitData = packet.split(':')
@@ -48,5 +48,5 @@ class PacketHandler:
                 self.handlers[unique_id].handle(data+"\n")
         else:
             print("[ERR][PACKETHANDLER]:",packet)
-            self.logger.debug("UnknownPacketDestination "+packet)
+            self.logger.debug("UnknownPacketDestination " + packet)
           

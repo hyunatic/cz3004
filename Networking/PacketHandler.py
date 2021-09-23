@@ -34,6 +34,8 @@ class PacketHandler:
                 return "ALGORITHM PC"
         elif header == 'IMG':
                 return "PI-CAMERA"
+        elif header == 'CPC':
+                return "CAMERA-PC"
             
     def handle(self,packet):
         splitData = packet.split(':')

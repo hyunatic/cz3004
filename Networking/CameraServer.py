@@ -6,7 +6,11 @@ import multiprocessing
 import logging
 import queue as Queue
 
-class SocketServer(multiprocessing.Process):
+import struct
+import picamera
+import io
+
+class CameraServer(multiprocessing.Process):
     print_lock = threading.Lock()
     handle_q = multiprocessing.Manager().Queue()
 
@@ -19,6 +23,14 @@ class SocketServer(multiprocessing.Process):
         self.job_q = job_q
         self.c = None 
         self.daemon=True
+
+        self.camera = picamera.PiCamera()
+        self.camera.rotation = 180
+        self.camera.resolution = (640, 480)
+        self.camera.start_preview()
+        time.sleep(2)
+        self.stream = io.BytesIO()
+
         self.start()
 
     def run(self):
@@ -29,6 +41,7 @@ class SocketServer(multiprocessing.Process):
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((self.host, self.port))
         s.listen(5)
+
         while True: 
             print("[LOG][PC]","Listening for connection")
             # Create connection with client 
@@ -37,12 +50,17 @@ class SocketServer(multiprocessing.Process):
             # Lock acquired by client 
             self.print_lock.acquire() 
             print("[LOG][PC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-            self.job_q.put(self.header+":ALG:PC Connected") 
+            self.job_q.put(self.header+":CPC:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             
+            #Camera function threading 
+            t3 = threading.Thread(target=self.CameraScanning,args=(self.c,self.job_q,))
+
             t1.start()
+            t3.start()
             t1.join()
+            t3.join()
             
        
         s.close()
@@ -50,7 +68,23 @@ class SocketServer(multiprocessing.Process):
 
     def getPacketHeader(self):
         return self.header
-
+        
+    def CameraScanning(self):
+        for foo in camera.capture_continuous(stream, 'jpeg'):
+            connection.write(struct.pack('<L', stream.tell()))
+            connection.flush()
+            stream.seek(0)
+            connection.write(stream.read())
+            if count == 0:
+                count+=1
+            else:
+                print(client_socket.recv(1024).decode())
+            if input("Press Enter to Send...") == '':
+                stream.seek(0)
+                stream.truncate()
+            else:
+                break
+            connection.write(struct.pack('<L', 0))
 
     def handleProcessor(self,delay):
         while True:

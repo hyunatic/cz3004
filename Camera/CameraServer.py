@@ -22,7 +22,6 @@ class CameraServer(multiprocessing.Process):
         self.job_q = job_q
         self.c = None 
 
-        print("Start Camera Constructor")
         self.daemon=True
         self.start()
 
@@ -35,7 +34,7 @@ class CameraServer(multiprocessing.Process):
             self.camera.start_preview()
             time.sleep(2)
             self.stream = io.BytesIO()
-            self.conn = None
+            #self.conn = None
 
             t2 = threading.Thread(target=self.handleProcessor, args=(0.00001,))
             t2.start()
@@ -49,7 +48,6 @@ class CameraServer(multiprocessing.Process):
                 print("[LOG][IMG]","Listening for connection")
                 # Create connection with client 
                 self.c, addr = s.accept()
-                self.conn = s.makefile('wb') 
                 
                 # Lock acquired by client 
                 self.print_lock.acquire() 
@@ -76,7 +74,7 @@ class CameraServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
-                print("Camera is Handling:" + packet + "\n")
+                print("Camera is Handling: \n")
                 self.CameraCapture()
 
                 #self.send_socket(packet)
@@ -85,22 +83,17 @@ class CameraServer(multiprocessing.Process):
     def CameraCapture(self):
         count = 0
         data = None
+        self.conn = self.c.makefile('wb')
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
-            print("Inside Frame Loop")
             self.conn.write(struct.pack('<L', self.stream.tell()))
             self.conn.flush()
+
             self.stream.seek(0)
             self.conn.write(self.stream.read())
-            if count == 0:
-                count += 1 
-            else:
-                print(self.s.recv(1024).decode())
-                data = self.s.recv(1024).decode()
-            if input("Press Enter to Send") == '':
-                self.stream.seek(0)
-                self.stream.truncate()
-            else:
-                break
+
+            self.stream.seek(0)
+            self.stream.truncate()
+
         self.conn.write(struct.pack('<L', 0))
         #self.job_q.put(self.header+":AND:+"data)
 

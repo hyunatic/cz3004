@@ -17,7 +17,8 @@ public class Client {
                 out.print(str)
 
                 str2 = in.readLine()
-                System.out.println("Server Replied:" + str2);
+                // must put the \n for it to work properly
+                System.out.println("Server Replied:" + str2 + "\n");
             }
         }
         catch(Exception e){

@@ -54,7 +54,7 @@ class CameraServer(multiprocessing.Process):
                 # Lock acquired by client 
                 self.print_lock.acquire() 
                 print("[LOG][IMG]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-                self.job_q.put(self.header+":IMG:PC Connected") 
+                self.job_q.put(self.header+":IMG: Camera Processing PC Connected") 
     
                 t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
                 
@@ -78,26 +78,31 @@ class CameraServer(multiprocessing.Process):
                 self.handle_q.task_done()
                 print("Camera is Handling:" + packet + "\n")
                 self.CameraCapture()
+
                 #self.send_socket(packet)
             time.sleep(delay)
 
     def CameraCapture(self):
         count = 0
+        data = None
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
+            print("Inside Frame Loop")
             self.conn.write(struct.pack('<L', self.stream.tell()))
-            #self.conn.flush()
+            self.conn.flush()
             self.stream.seek(0)
             self.conn.write(self.stream.read())
             if count == 0:
                 count += 1 
             else:
                 print(self.s.recv(1024).decode())
+                data = self.s.recv(1024).decode()
             if input("Press Enter to Send") == '':
                 self.stream.seek(0)
                 self.stream.truncate()
             else:
                 break
         self.conn.write(struct.pack('<L', 0))
+        #self.job_q.put(self.header+":AND:+"data)
 
     def handle(self,packet):
         self.handle_q.put(packet)

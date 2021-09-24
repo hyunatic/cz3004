@@ -84,7 +84,10 @@ class CameraServer(multiprocessing.Process):
         count = 0
         data = None
         self.conn = self.c.makefile('wb')
+
+
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
+            print("In loop")
             self.conn.write(struct.pack('<L', self.stream.tell()))
             self.conn.flush()
 
@@ -93,6 +96,7 @@ class CameraServer(multiprocessing.Process):
 
             self.stream.seek(0)
             self.stream.truncate()
+            print(self.c.recv(1024).decode('utf-8'))
 
         self.conn.write(struct.pack('<L', 0))
         #self.job_q.put(self.header+":AND:+"data)

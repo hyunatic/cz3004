@@ -44,10 +44,10 @@ class RCMgmt(multiprocessing.Process):
         try:
             self.serial_port.open()
             self.connected=True
-            print("[LOG][RC-Car]","RC-Car Connection opened")
+            print("[LOG][STM]","RC-Car Connection opened")
             return True
         except serial.SerialException as e:
-            print("[ERR][RC-Car","Unable to open serial port")
+            print("[ERR][STM]","Unable to open serial port")
 #            self.logger.debug(e)
             return False
 
@@ -85,9 +85,9 @@ class RCMgmt(multiprocessing.Process):
         if self.serial_port.isOpen():
             message = message.strip()
             self.serial_port.write(message.encode('utf-8')) 
-            print("[SEND][RC-Car]:",message)
+            print("[SEND][STM]:",message)
         else:
-            print("[ERR][RC-Car]:","Serial port not open")
+            print("[ERR][STM]:","Serial port not open")
 
     def read(self,job_q):
         in_buffer = ""
@@ -98,7 +98,7 @@ class RCMgmt(multiprocessing.Process):
 
                 if len(data) == 0:
                     continue
-                print('raw data from RC Car:', data.decode('utf-8'))
+                print('raw data from STM:', data.decode('utf-8'))
                 data = data.decode('utf-8')
                 job_q.put(self.header+":AND:"+data)
 
@@ -107,7 +107,7 @@ class RCMgmt(multiprocessing.Process):
                 self.logger.debug(e)
                 while self.connected==False:
                      self.connect()
-                     print("Reconnecting RC-Car in 3 seconds...")
+                     print("Reconnecting STM in 3 seconds...")
                      time.sleep(3)
                 break
 

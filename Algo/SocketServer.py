@@ -37,7 +37,7 @@ class SocketServer(multiprocessing.Process):
             # Lock acquired by client 
             self.print_lock.acquire() 
             print("[LOG][ALGOPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-            self.job_q.put(self.header+":ALG:PC Connected") 
+            self.job_q.put(self.header+":AND:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             
@@ -57,8 +57,8 @@ class SocketServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
+
                 self.send_socket(packet)
-            
             time.sleep(delay)
 
     def handle(self,packet):
@@ -70,6 +70,7 @@ class SocketServer(multiprocessing.Process):
                     print("[ERR][ALGOPC]","Trying to send but no clients connected")
                     self.job_q.put(self.header+":ALG:PC not connected")
                 else:
+                    message = message
                     self.c.sendall(message.encode('utf-8'))
         except socket.error as e:
                 print(socket.error)
@@ -81,13 +82,14 @@ class SocketServer(multiprocessing.Process):
         while True: 
             try:
                 data = c.recv(1024)
-                data = data.strip().decode('utf-8')
+                data = data.decode('utf-8')
 
                 if not data: 
                     print('Bye')
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:    
+                    job_q.put(self.header+":ALG: Sent to Android")  
                     job_q.put(self.header+":AND:"+ data)  
              
                     

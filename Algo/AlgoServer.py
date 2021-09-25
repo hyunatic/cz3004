@@ -6,7 +6,7 @@ import multiprocessing
 import logging
 import queue as Queue
 
-class SocketServer(multiprocessing.Process):
+class AlgoServer(multiprocessing.Process):
     print_lock = threading.Lock()
     handle_q = multiprocessing.Manager().Queue()
 
@@ -37,7 +37,7 @@ class SocketServer(multiprocessing.Process):
             # Lock acquired by client 
             self.print_lock.acquire() 
             print("[LOG][ALGOPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-            self.job_q.put(self.header+":AND:PC Connected") 
+            self.job_q.put(self.header+":ALG:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             
@@ -57,7 +57,6 @@ class SocketServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
-
                 self.send_socket(packet)
             time.sleep(delay)
 
@@ -71,7 +70,7 @@ class SocketServer(multiprocessing.Process):
                     self.job_q.put(self.header+":ALG:PC not connected")
                 else:
                     message = message
-                    self.c.sendall(message.encode('utf-8'))
+                    self.c.send(message.encode('utf-8'))
         except socket.error as e:
                 print(socket.error)
                 self.logger.debug(e)
@@ -89,8 +88,8 @@ class SocketServer(multiprocessing.Process):
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:    
-                    job_q.put(self.header+":ALG: Sent to Android")  
-                    job_q.put(self.header+":AND:"+ data)  
+                    print("Sending to STM")
+                    job_q.put(self.header+":STM:"+ data)  
              
                     
             except socket.error as e:

@@ -1,6 +1,6 @@
 import multiprocessing
 import logging
-from Algo import SocketServer
+from Algo import AlgoServer
 from Android import BluetoothMgmt
 from Networking import PacketHandler
 from Camera import CameraServer
@@ -18,7 +18,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 # #Server Details
 ip_Address = '192.168.10.1'
-server = SocketServer.SocketServer(ip_Address,5000,process_Queue,"ALG")
+server = AlgoServer.AlgoServer(ip_Address,5000,process_Queue,"ALG")
 
 #Create BlueToothManager Thread for Andriod Tablet Connection
 bluetoothMgmt = BluetoothMgmt.BluetoothMgmt(1,process_Queue,"AND")

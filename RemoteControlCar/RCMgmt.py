@@ -69,7 +69,7 @@ class RCMgmt(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get().strip()
                 self.handle_q.task_done()
-#                print("RC-Car is handling : "+packet+"   \n")
+                print("RC-Car is handling : "+packet+"   \n")
                 splitData = packet.split(':')
                 command = splitData;
                 self.write(packet)

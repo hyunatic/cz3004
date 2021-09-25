@@ -74,9 +74,7 @@ class CameraServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
-                print("Camera is Handling: \n")
                 self.CameraCapture()
-
                 #self.send_socket(packet)
             time.sleep(delay)
 
@@ -84,7 +82,6 @@ class CameraServer(multiprocessing.Process):
         count = 0
         data = None
         self.conn = self.c.makefile('wb')
-
 
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
             print("In loop")
@@ -96,10 +93,8 @@ class CameraServer(multiprocessing.Process):
 
             self.stream.seek(0)
             self.stream.truncate()
-            print(self.c.recv(1024).decode('utf-8'))
 
         self.conn.write(struct.pack('<L', 0))
-        #self.job_q.put(self.header+":AND:+"data)
 
     def handle(self,packet):
         self.handle_q.put(packet)
@@ -117,18 +112,19 @@ class CameraServer(multiprocessing.Process):
                 
         
 # Thread Function
-    def thread_receive(self,c,job_q): 
+    def thread_receive(self,c,job_q):
         while True: 
             try:
                 data = c.recv(1024)
                 data = data.strip().decode('utf-8')
+                print(data)
 
                 if not data: 
                     print('Bye')
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:    
-                    job_q.put(self.header+":AND:"+ data)  
+                    job_q.put(self.header+":AND:"+ data) 
              
                     
             except socket.error as e:

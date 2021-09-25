@@ -79,10 +79,7 @@ class CameraServer(multiprocessing.Process):
             time.sleep(delay)
 
     def CameraCapture(self):
-        count = 0
-        data = None
         self.conn = self.c.makefile('wb')
-
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
             print("In loop")
             self.conn.write(struct.pack('<L', self.stream.tell()))
@@ -105,7 +102,7 @@ class CameraServer(multiprocessing.Process):
                     print("[ERR][IMG]","Trying to send but no clients connected")
                     self.job_q.put(self.header+":AND:PC not connected")
                 else:
-                    self.c.sendall(message.encode('utf-8'))
+                    self.c.send(message.encode('utf-8'))
         except socket.error as e:
                 print(socket.error)
                 self.logger.debug(e)

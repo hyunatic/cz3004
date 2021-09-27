@@ -67,9 +67,8 @@ class AlgoServer(multiprocessing.Process):
         try:
                 if(self.c == None):
                     print("[ERR][ALGOPC]","Trying to send but no clients connected")
-                    self.job_q.put(self.header+":ALG:PC not connected")
+                    # self.job_q.put(self.header+":ALG:PC not connected")
                 else:
-                    message = message
                     self.c.send(message.encode('utf-8'))
         except socket.error as e:
                 print(socket.error)
@@ -87,9 +86,11 @@ class AlgoServer(multiprocessing.Process):
                     print('Bye')
                     self.print_lock.release()    # lock released on exit 
                     break
-                if len(data)>0:    
-                    print("Sending to STM")
-                    job_q.put(self.header+":STM:"+ data)  
+                if len(data)>0:
+                    if(data == "scan"):
+                         job_q.put(self.header+":IMG:"+ data)
+                    else:     
+                        job_q.put(self.header+":STM:"+ data)  
              
                     
             except socket.error as e:

@@ -29,12 +29,15 @@ class BluetoothMgmt(multiprocessing.Process):
             try:
                 data = c.recv(1024)
                 if len(data)>0:
-                     packet = data
-                     print("Received Data From Android: " + packet.decode('utf-8'))
-                     print("Sending to Algo")
-                     self.job_q.put(self.header+":ALG:"+packet.decode('utf-8') + "\n")
+                    packet = data.decode('utf-8')
+                    print("Received from Android: " + packet)
+                    if(packet[:4] == 'scan'):
+                        self.job_q.put(self.header+":IMG:"+ packet)
+                    else:     
+                        self.job_q.put(self.header+":STM:"+ packet)
+                    # self.job_q.put(self.header+":ALG:"+packet)
             except BluetoothError as e:
-                print("[ERR][ANDROID]:","Disconnection")#can consider logging...
+                print("[ERR][ANDROID]: Disconnected")#can consider logging...
                 self.logger.debug(e)
                 
                 break

@@ -70,8 +70,6 @@ class RCMgmt(multiprocessing.Process):
                 packet = self.handle_q.get().strip()
                 self.handle_q.task_done()
                 print("RC-Car is handling : "+packet+"   \n")
-                splitData = packet.split(':')
-                command = splitData;
                 self.write(packet)
 
             time.sleep(0.000001)
@@ -100,7 +98,7 @@ class RCMgmt(multiprocessing.Process):
                     continue
                 print('raw data from STM:', data.decode('utf-8'))
                 data = data.decode('utf-8')
-                job_q.put(self.header+":AND:"+data)
+                job_q.put(self.header+":ALG:"+data + "\n")
 
             except serial.SerialException as e:
                 print >> stderr,(self.__class__.__name__,e)

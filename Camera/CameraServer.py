@@ -33,8 +33,6 @@ class CameraServer(multiprocessing.Process):
             self.camera.resolution = (640, 480)
             self.camera.start_preview()
             time.sleep(2)
-            self.stream = io.BytesIO()
-            #self.conn = None
 
             t2 = threading.Thread(target=self.handleProcessor, args=(0.00001,))
             t2.start()
@@ -45,13 +43,13 @@ class CameraServer(multiprocessing.Process):
             s.listen(5)
 
             while True: 
-                print("[LOG][IMG]","Listening for connection")
+                print("[LOG][IMGPC]","Listening for connection")
                 # Create connection with client 
                 self.c, addr = s.accept()
                 
                 # Lock acquired by client 
                 self.print_lock.acquire() 
-                print("[LOG][IMG]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
+                print("[LOG][IMGPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
                 self.job_q.put(self.header+":IMG: Camera Processing PC Connected") 
     
                 t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
@@ -73,25 +71,24 @@ class CameraServer(multiprocessing.Process):
         while True:
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
-                if(packet[:4] == "scan"):
-                    self.CameraCapture() 
+                if (packet[:4] == 'scan'):
+                    self.CameraCapture()
                 self.handle_q.task_done()
                 #self.send_socket(packet)
             time.sleep(delay)
 
     def CameraCapture(self):
         self.conn = self.c.makefile('wb')
+        self.stream = io.BytesIO()
         for frame in self.camera.capture_continuous(self.stream, 'jpeg'):
             self.conn.write(struct.pack('<L', self.stream.tell()))
             self.conn.flush()
-
             self.stream.seek(0)
             self.conn.write(self.stream.read())
             break
-
             # self.stream.seek(0)
             # self.stream.truncate()
-        
+
         self.conn.write(struct.pack('<L', 0))
 
     def handle(self,packet):
@@ -100,7 +97,7 @@ class CameraServer(multiprocessing.Process):
     def send_socket(self,message):
         try:
                 if(self.c == None):
-                    print("[ERR][IMG]","Trying to send but no clients connected")
+                    print("[ERR][IMGPC]","Trying to send but no clients connected")
                     # self.job_q.put(self.header+":AND:PC not connected")
                 else:
                     self.c.send(message.encode('utf-8'))
@@ -111,14 +108,13 @@ class CameraServer(multiprocessing.Process):
         
 # Thread Function
     def thread_receive(self,c,job_q):
-        oldText = ""
         while True: 
             try:
                 data = c.recv(1024)
                 data = data.strip().decode('utf-8')
 
                 if not data: 
-                    print('Bye')
+                    print('IMG PC Said: Bye')
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:

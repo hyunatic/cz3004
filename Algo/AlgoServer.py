@@ -20,6 +20,7 @@ class AlgoServer(multiprocessing.Process):
         self.c = None 
         self.daemon=True
         self.start()
+        self.cmdArray = None
 
     def run(self):
         t2 = threading.Thread(target=self.handleProcessor, args=(0.00001,))
@@ -29,6 +30,7 @@ class AlgoServer(multiprocessing.Process):
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((self.host, self.port))
         s.listen(5)
+        self.cmdArray = []
         while True: 
             print("[LOG][ALGOPC]","Listening for connection")
             # Create connection with client 
@@ -37,7 +39,7 @@ class AlgoServer(multiprocessing.Process):
             # Lock acquired by client 
             self.print_lock.acquire() 
             print("[LOG][ALGOPC]","Connection from:" + str(addr[0]) +":"+ str(addr[1])) 
-            self.job_q.put(self.header+":ALG:PC Connected") 
+            #self.job_q.put(self.header+":ALG:PC Connected") 
  
             t1 = threading.Thread(target=self.thread_receive,args=(self.c,self.job_q,))
             
@@ -57,7 +59,10 @@ class AlgoServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
-                self.send_socket(packet)
+                if(packet[:1] == 'A' and len(self.cmdArray) != 0):
+                    self.SendCommand()
+                else:
+                    self.send_socket(packet)
             time.sleep(delay)
 
     def handle(self,packet):
@@ -73,7 +78,11 @@ class AlgoServer(multiprocessing.Process):
         except socket.error as e:
                 print(socket.error)
                 self.logger.debug(e)
-                
+
+    def SendCommand(self):
+        print("Running command:" + self.cmdArray[0])
+        self.job_q.put(self.header + ":STM:" + self.cmdArray[0])
+        del self.cmdArray[0]
         
 # Thread Function
     def thread_receive(self,c,job_q): 
@@ -83,14 +92,18 @@ class AlgoServer(multiprocessing.Process):
                 data = data.decode('utf-8')
 
                 if not data: 
-                    print('Bye')
+                    print('ALGO PC Said: Bye')
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:
-                    if(data == "scan"):
-                         job_q.put(self.header+":IMG:"+ data)
-                    else:     
-                        job_q.put(self.header+":STM:"+ data)  
+                    if(data[:4] == ':IMG'):
+                        job_q.put(self.header + data)
+                    else:
+                        buffer = data.split(':')
+                        commands = buffer[2].split(',')
+                        self.cmdArray.extend(commands)
+                        job_q.put(self.header + ":STM:" +self.cmdArray[0])
+                        del self.cmdArray[0]  
              
                     
             except socket.error as e:

@@ -9,7 +9,7 @@ import queue as Queue
 
 class BluetoothMgmt(multiprocessing.Process):
     handle_q = multiprocessing.Manager().Queue()
-    whitelist = ['50:50:A4:33:9C:09', '10:E4:C2:51:37:F0', '3C:F7:A4:BC:DA:06']
+    whitelist = ['50:50:A4:33:9C:09', 'CC:46:4E:E1:CC:9B', 'CC:46:4E:E1:CC:9A', '10:E4:C2:51:37:F0', '3C:F7:A4:BC:DA:06', 'F0:5C:77:BB:76:42']
     
   
     def __init__(self,port,job_q,header):
@@ -31,11 +31,7 @@ class BluetoothMgmt(multiprocessing.Process):
                 if len(data)>0:
                     packet = data.decode('utf-8')
                     print("Received from Android: " + packet)
-                    if(packet[:4] == 'scan'):
-                        self.job_q.put(self.header+":IMG:"+ packet)
-                    else:     
-                        self.job_q.put(self.header+":STM:"+ packet)
-                    # self.job_q.put(self.header+":ALG:"+packet)
+                    self.job_q.put(self.header + packet + "\n")
             except BluetoothError as e:
                 print("[ERR][ANDROID]: Disconnected")#can consider logging...
                 self.logger.debug(e)
@@ -92,8 +88,8 @@ class BluetoothMgmt(multiprocessing.Process):
                 t.start()
                 t.join()
             else :
-                print("[ERR][ANDROID]","Unknown device tried to connect. MAC: "+address)
-                self.logger.debug("Unknown device tried to connect. MAC:",address)
+                print("[ERR][ANDROID]","Unknown device tried to connect. MAC: "+str(address))
+                self.logger.debug("Unknown device tried to connect. MAC:",str(address))
                 self.c.close()
                 
            

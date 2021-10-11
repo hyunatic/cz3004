@@ -96,7 +96,10 @@ class AlgoServer(multiprocessing.Process):
                     self.print_lock.release()    # lock released on exit 
                     break
                 if len(data)>0:
+                    #Week 8 Code
                     if(data[:4] == ':IMG'):
+                        job_q.put(self.header + data)
+                    elif(data[:4] == ':AND'):
                         job_q.put(self.header + data)
                     else:
                         buffer = data.split(':')

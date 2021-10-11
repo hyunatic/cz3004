@@ -98,7 +98,10 @@ class RCMgmt(multiprocessing.Process):
                     continue
                 print('raw data from STM:', data.decode('utf-8'))
                 data = data.decode('utf-8')
-                job_q.put(self.header+":ALG:"+data + "\n")
+                #Week 8 If running week 8 stuff uncomment the next line
+                #job_q.put(self.header+":ALG:"+data + "\n")
+                #Week 9 If running week 9 stuff uncomment the next line with
+                job_q.put(self.header+":AND:"+data + "\n")
 
             except serial.SerialException as e:
                 print >> stderr,(self.__class__.__name__,e)

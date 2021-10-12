@@ -59,9 +59,11 @@ class AlgoServer(multiprocessing.Process):
             if(self.handle_q.qsize()!=0):
                 packet = self.handle_q.get()
                 self.handle_q.task_done()
+                print("Length of Array: " + str(len(self.cmdArray)))
                 if(packet[:1] == 'A' and len(self.cmdArray) != 0):
                     self.SendCommand()
                 else:
+                    print("Sending Acknowledgement to ALG")
                     self.send_socket(packet)
             time.sleep(delay)
 
@@ -98,12 +100,15 @@ class AlgoServer(multiprocessing.Process):
                 if len(data)>0:
                     if(data[:4] == ':IMG'):
                         job_q.put(self.header + data)
+                    elif(data[:4] == ':AND'):
+                        job_q.put(self.header + data)
                     else:
+                        print("[RECV New List from ALG]")
                         buffer = data.split(':')
                         commands = buffer[2].split(',')
                         self.cmdArray.extend(commands)
                         job_q.put(self.header + ":STM:" +self.cmdArray[0])
-                        del self.cmdArray[0]  
+                        del self.cmdArray[0] 
              
                     
             except socket.error as e:
